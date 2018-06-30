@@ -10,10 +10,17 @@ class FullPost extends Component {
     }
 
     componentDidMount() {
-        console.log(this.props);
+        console.log('\n\nPasses id inside Full post: ' + this.props.match.params.id);
+        this.loadData();
+    }
 
+    componentDidUpdate() {
+        this.loadData();
+    }
+
+    loadData() {
         if (this.props.match.params.id) {
-            if (!this.state.loadedPost || (this.state.loadedPost && this.state.loadedPost.id !== this.props.id)) {
+            if (!this.state.loadedPost || (this.state.loadedPost && this.state.loadedPost.id !== +this.props.match.params.id)) {
                 axios.get('/posts/' + this.props.match.params.id)
                     .then(response => {
                         this.setState({ loadedPost: response.data });
@@ -22,8 +29,9 @@ class FullPost extends Component {
         }
     }
 
+
     deletePostHandler = (id) => {
-        axios.delete('/posts/' + id)
+        axios.delete('/' + id)
             .then(response => {
                 console.log(response);
             });
@@ -41,7 +49,7 @@ class FullPost extends Component {
                     <h1>{this.state.loadedPost.title}</h1>
                     <p>{this.state.loadedPost.body}</p>
                     <div className="Edit">
-                        <button className="Delete" onClick={() => this.deletePostHandler(this.props.id)}>Delete</button>
+                        <button className="Delete" onClick={() => this.deletePostHandler(this.props.match.params.id)}>Delete</button>
                     </div>
                 </div>
             );
